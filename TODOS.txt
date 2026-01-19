@@ -1,0 +1,9 @@
+To be done:
+- Make cube 3d model
+- Figure out background texture
+- Figure out refection texture
+- Install threejs
+
+
+Done:
+- 
