@@ -1,5 +1,13 @@
+@font-face {
+    font-family: 'Rodin Pro DB';
+    src: url('assets/fonts/FOT-Rodin\ Pro\ DB.woff2') format('woff2'),
+         url('assets/fonts/FOT-Rodin\ Pro\ DB.otf') format('otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
-	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	font-family: 'Rodin Pro DB', system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
 	font-weight: 400;
 
