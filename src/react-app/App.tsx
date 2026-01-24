@@ -70,11 +70,11 @@ function App() {
 			const cubeMesh = sceneRef.current.scene?.getObjectById(meshId)
 			if (cubeMesh) {
 				// make the cube look like its bouncing on its corners
-				const time = sceneRef.current.animationFrameId * 0.002;
-				cubeMesh.position.y = Math.abs(Math.sin(time)) * 0.2 - 0.1;
-				cubeMesh.rotation.x = Math.abs(Math.sin(time)) * 0.3 - 0.15;
-				cubeMesh.rotation.y = Math.abs(Math.sin(time)) * 0.3 - 0.15;
-				// cubeMesh.rotation.y += 0.01;
+				const time = sceneRef.current.animationFrameId * 0.005;
+				cubeMesh.position.y = Math.sin(time) * 0.1;
+				cubeMesh.rotation.x = Math.cos(time) * 0.1;
+				cubeMesh.rotation.y = Math.cos(time) * 0.1;
+				cubeMesh.rotation.z = Math.sin(time) * 0.05;
 			}
 			if (controls) {
 				controls.update();
