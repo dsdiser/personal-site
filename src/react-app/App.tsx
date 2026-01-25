@@ -39,18 +39,18 @@ function BouncingBox() {
 		<RoundedBox ref={meshRef} radius={0.075} smoothness={3}>
 			<MeshTransmissionMaterial
 				backside
-				thickness={0.2}
+				thickness={0.1}
 				anisotropy={0.5}
 				iridescence={1}
 				iridescenceIOR={1}
 				iridescenceThicknessRange={[0, 1400]}
 			/>
-			<Button position={[0, 0.3, 0.45]}>Game Play</Button>
-			<Button rotation={[0, 0, -Math.PI / 2]} position={[0.3, 0, 0.45]}>
+			<Button position={[0, 0.35, 0.45]}>Game Play</Button>
+			<Button rotation={[0, 0, -Math.PI / 2]} position={[0.35, 0, 0.45]}>
 				Calendar
 			</Button>
-			<Button position={[0, -0.3, 0.45]}>Memory Card</Button>
-			<Button rotation={[0, 0, Math.PI / 2]} position={[-0.3, 0, 0.45]}>
+			<Button position={[0, -0.35, 0.45]}>Memory Card</Button>
+			<Button rotation={[0, 0, Math.PI / 2]} position={[-0.35, 0, 0.45]}>
 				Options
 			</Button>
 		</RoundedBox>
