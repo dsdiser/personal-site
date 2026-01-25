@@ -1,115 +1,78 @@
 import "./App.css";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Environment, OrbitControls, RoundedBox, Text, MeshTransmissionMaterial, Billboard } from "@react-three/drei";
 import * as THREE from "three";
-import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-function App() {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const sceneRef = useRef<{
-		renderer?: THREE.WebGLRenderer;
-		scene?: THREE.Scene;
-		camera?: THREE.PerspectiveCamera;
-		controls?: OrbitControls;
-		animationFrameId?: number;
-	}>({});
+function Button({ children, color = 'white', ...props }) {
+	const ref = useRef<THREE.Mesh>(null);
+	return (
+		<Text
+			ref={ref}
+			color={color}
+			onPointerOver={() => ref.current?.material.color.set('orange')}
+			onPointerOut={() => ref.current?.material.color.set(color)}
+			font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZs.woff"
+			anchorY="middle"
+			anchorX="center"
+			fontSize={0.09}
+			{...props}>
+			{children}
+		</Text>
+	);
+}
 
-	useEffect(() => {
-		const container = containerRef.current;
-		if (!container) return;
+function BouncingBox() {
+	const meshRef = useRef<THREE.Mesh>(null);
 
-		// Get dimensions
-		const width = window.innerWidth;
-		const height = window.innerHeight;
-
-		// Camera
-		const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 10);
-		camera.position.z = 2.5;
-
-		// Scene
-		const scene = new THREE.Scene();
-		scene.background = new THREE.Color(0x111111);
-
-		// Geometry and Material
-		const geometry = new RoundedBoxGeometry(1, 1, 1, 20, 0.1);
-		const material = new THREE.MeshStandardMaterial({ 
-			roughness: .2,
-			transparent: true,
-			opacity: 0.3,
-			wireframe: true,
-			color: 0x00ff00
-		});
-		const mesh = new THREE.Mesh(geometry, material);
-		const meshId = mesh.id;
-		scene.add(mesh);
-
-		// Renderer
-		const renderer = new THREE.WebGLRenderer({ antialias: true });
-		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize(width, height);
-		container.appendChild(renderer.domElement);
-
-		// Environment
-		const environment = new RoomEnvironment();
-		const pmremGenerator = new THREE.PMREMGenerator(renderer);
-		scene.environment = pmremGenerator.fromScene(environment).texture;
-
-		// Controls
-		const controls = new OrbitControls(camera, renderer.domElement);
-		// controls.autoRotate = true;
-		controls.enableDamping = true;
-		controls.dampingFactor = 0.05;
-
-		// Store references
-		sceneRef.current = { renderer, scene, camera, controls };
-
-		// Animation loop
-		const animate = () => {
-			sceneRef.current.animationFrameId = requestAnimationFrame(animate);
-			const cubeMesh = sceneRef.current.scene?.getObjectById(meshId)
-			if (cubeMesh) {
-				// make the cube look like its bouncing on its corners
-				const time = sceneRef.current.animationFrameId * 0.005;
-				cubeMesh.position.y = Math.sin(time) * 0.1;
-				cubeMesh.rotation.x = Math.cos(time) * 0.1;
-				cubeMesh.rotation.y = Math.cos(time) * 0.1;
-				cubeMesh.rotation.z = Math.sin(time) * 0.05;
-			}
-			if (controls) {
-				controls.update();
-			}
-			renderer.render(scene, camera);
-		};
-		animate();
-
-		// Handle window resize
-		const handleResize = () => {
-			const newWidth = window.innerWidth;
-			const newHeight = window.innerHeight;
-			camera.aspect = newWidth / newHeight;
-			camera.updateProjectionMatrix();
-			renderer.setSize(newWidth, newHeight);
-		};
-
-		window.addEventListener("resize", handleResize);
-
-		// Cleanup
-		return () => {
-			window.removeEventListener("resize", handleResize);
-			if (sceneRef.current.animationFrameId) {
-				cancelAnimationFrame(sceneRef.current.animationFrameId);
-			}
-			geometry.dispose();
-			material.dispose();
-			renderer.dispose();
-			container.removeChild(renderer.domElement);
-		};
-	}, []);
+	useFrame((state) => {
+		if (meshRef.current) {
+			const time = state.clock.elapsedTime;
+			meshRef.current.position.y = Math.sin(time) * 0.1;
+			meshRef.current.rotation.x = Math.cos(time) * 0.1;
+			meshRef.current.rotation.y = Math.cos(time) * 0.1;
+			meshRef.current.rotation.z = Math.sin(time) * 0.05;
+		}
+	});
 
 	return (
+		<RoundedBox ref={meshRef} radius={0.075} smoothness={3}>
+			<MeshTransmissionMaterial
+				backside
+				thickness={0.2}
+				anisotropy={0.5}
+				iridescence={1}
+				iridescenceIOR={1}
+				iridescenceThicknessRange={[0, 1400]}
+			/>
+			<Button position={[0, 0.3, 0.45]}>Game Play</Button>
+			<Button rotation={[0, 0, -Math.PI / 2]} position={[0.3, 0, 0.45]}>
+				Calendar
+			</Button>
+			<Button position={[0, -0.3, 0.45]}>Memory Card</Button>
+			<Button rotation={[0, 0, Math.PI / 2]} position={[-0.3, 0, 0.45]}>
+				Options
+			</Button>
+		</RoundedBox>
+	);
+}
+
+function App() {
+	return (
 		<div className="App">
-			<div ref={containerRef} />
+			<Canvas 
+				camera={{ position: [0, 0.5, 4], fov: 25 }}
+				dpr={window.devicePixelRatio}
+				gl={{ antialias: true }}
+			>
+				<color attach="background" args={["#151520"]} />
+				<ambientLight intensity={0.5} />
+				<spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+				<pointLight position={[-10, -10, -10]} />
+				<BouncingBox />
+				<OrbitControls />
+				<Environment preset="city" />
+			</Canvas>
 		</div>
 	);
 }
