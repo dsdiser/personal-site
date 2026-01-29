@@ -5,7 +5,22 @@ import { Environment, RoundedBox, MeshTransmissionMaterial } from "@react-three/
 import { MenuButtons } from "./MenuButtons";
 import { getScreenConfig } from "./navigationConfig";
 import { useRotationSnap } from "./useRotationSnap";
+import type { Vector3 } from "./types";
 
+const bounceAmount = 0.05;
+const wobbleAmount = 0.05;
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+// Get the target rotation for the current face
+const targetRotations: Record<number, Vector3> = {
+	0: [0, 0, 0],                      // Front
+	1: [0, Math.PI / 2, 0],            // Right
+	2: [0, Math.PI, 0],                // Back
+	3: [0, -Math.PI / 2, 0],           // Left
+	4: [Math.PI / 2, 0, 0],            // Top
+	5: [-Math.PI / 2, 0, 0],           // Bottom
+};
 
 interface BouncingBoxProps {
 	currentScreenId: string;
@@ -24,13 +39,23 @@ function BouncingBox({ currentScreenId, onNavigate }: BouncingBoxProps) {
 			// Update rotation animation
 			updateRotation(performance.now());
 
-			// Add subtle animation when not snapping
-			if (!isRotationAnimating()) {
+			// Add subtle animation when not snapping, relative to current face
+			if (!isRotationAnimating() && currentScreen) {
 				const time = state.clock.elapsedTime;
-				meshRef.current.position.y = Math.sin(time) * 0.1;
-				meshRef.current.rotation.x = Math.cos(time) * 0.1;
-				meshRef.current.rotation.y = Math.cos(time) * 0.1;
-				meshRef.current.rotation.z = Math.sin(time) * 0.05;
+				const targetRot = targetRotations[currentScreen.faceIndex];
+
+				// Calculate target positions and rotations
+				const targetBounce = Math.sin(time) * bounceAmount;
+				const targetRotX = targetRot[0] + Math.cos(time) * wobbleAmount;
+				const targetRotY = targetRot[1] + Math.cos(time) * wobbleAmount;
+				const targetRotZ = targetRot[2] + Math.sin(time) * (wobbleAmount * 0.5);
+
+				// Lerp all factors for smooth interpolation
+				const lerpFactor = 0.1;
+				meshRef.current.position.y = lerp(meshRef.current.position.y, targetBounce, lerpFactor);
+				meshRef.current.rotation.x = lerp(meshRef.current.rotation.x, targetRotX, lerpFactor);
+				meshRef.current.rotation.y = lerp(meshRef.current.rotation.y, targetRotY, lerpFactor);
+				meshRef.current.rotation.z = lerp(meshRef.current.rotation.z, targetRotZ, lerpFactor);
 			}
 		}
 	});

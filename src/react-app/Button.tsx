@@ -1,13 +1,14 @@
 import { useRef, ReactNode } from "react";
 import { Text } from "@react-three/drei";
 import * as THREE from "three";
+import type { Vector3 } from "./types";
 
 interface ButtonProps {
     children: ReactNode;
     color?: string;
     onClick?: () => void;
-    position?: [number, number, number];
-    rotation?: [number, number, number];
+    position?: Vector3;
+    rotation?: Vector3;
 }
 
 export function Button({ children, color = 'white', onClick, ...props }: ButtonProps) {

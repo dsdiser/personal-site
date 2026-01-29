@@ -1,5 +1,6 @@
 import { MenuScreen } from "./navigationConfig";
 import { Button } from "./Button";
+import type { Vector3 } from "./types";
 
 interface MenuButtonsProps {
 	screen: MenuScreen;
@@ -12,8 +13,8 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 	const surfaceOffset = 0.45;
 	const buttonOffset = 0.35;
 
-	let buttonPositions: [number, number, number][];
-	let buttonRotations: [number, number, number][];
+	let buttonPositions: Vector3[];
+	let buttonRotations: Vector3[];
 
 	// For each face, define where the 4 buttons should be positioned
 	switch (screen.faceIndex) {
@@ -120,7 +121,7 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 	const numButtons = screen.buttons.length;
 	const isSingleButton = numButtons === 1;
 
-	const centerPositions: [number, number, number][] = [
+	const centerPositions: Vector3[] = [
 		[0, 0, surfaceOffset],
 		[surfaceOffset, 0, 0],
 		[0, 0, -surfaceOffset],
@@ -129,7 +130,7 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 		[0, -surfaceOffset, 0],
 	];
 
-	const centerRotations: [number, number, number][] = [
+	const centerRotations: Vector3[] = [
 		[0, 0, 0],                  // Face 0: Front
 		[0, Math.PI / 2, 0],        // Face 1: Right
 		[0, Math.PI, 0],            // Face 2: Back
@@ -153,8 +154,8 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 				return (
 					<Button
 						key={button.nextScreenId}
-						position={position as [number, number, number]}
-						rotation={rotation as [number, number, number]}
+						position={position as Vector3}
+						rotation={rotation as Vector3}
 						onClick={() => onNavigate(button.nextScreenId)}
 					>
 						{button.label}

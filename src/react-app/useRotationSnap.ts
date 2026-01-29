@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
+import type { Vector3 } from "./types";
 
 interface UseRotationSnapProps {
 	targetFaceIndex: number;
@@ -14,15 +15,16 @@ export function useRotationSnap({
 }: UseRotationSnapProps) {
 	const meshRef = useRef<THREE.Mesh>(null);
 	const isAnimatingRef = useRef(false);
-	const startRotationRef = useRef<[number, number, number]>([0, 0, 0]);
-	const targetRotationRef = useRef<[number, number, number]>([0, 0, 0]);
+	const startRotationRef = useRef<Vector3>([0, 0, 0]);
+	const targetRotationRef = useRef<Vector3>([0, 0, 0]);
 	const animationStartTimeRef = useRef(0);
+	const animationCompleteTimeRef = useRef(0);
 	const currentTargetFaceRef = useRef(targetFaceIndex);
 
 	// Calculate target rotation based on face index
 	// Cube faces: 0=front, 1=right, 2=back, 3=left, 4=top, 5=bottom
-	const getFaceRotation = (faceIndex: number): [number, number, number] => {
-		const rotations: Record<number, [number, number, number]> = {
+	const getFaceRotation = (faceIndex: number): Vector3 => {
+		const rotations: Record<number, Vector3> = {
 			0: [0, 0, 0],                        // Front
 			1: [0, Math.PI / 2, 0],              // Right
 			2: [0, Math.PI, 0],                  // Back
@@ -50,11 +52,22 @@ export function useRotationSnap({
 		];
 		targetRotationRef.current = getFaceRotation(faceIndex);
 		animationStartTimeRef.current = performance.now();
+		animationCompleteTimeRef.current = 0;
 	};
 
 	// Animation loop integration
 	const updateRotation = (currentTime: number) => {
 		if (!isAnimatingRef.current || !meshRef.current) return;
+
+		// Check if animation is complete and delay for a bit before reporting completion
+		if (animationCompleteTimeRef.current > 0) {
+			const delayElapsed = currentTime - animationCompleteTimeRef.current;
+			if (delayElapsed >= 250) {
+				isAnimatingRef.current = false;
+				onSnapComplete?.();
+			}
+			return;
+		}
 
 		const elapsed = currentTime - animationStartTimeRef.current;
 		const progress = Math.min(elapsed / animationDuration, 1);
@@ -73,8 +86,7 @@ export function useRotationSnap({
 		meshRef.current.rotation.z = start[2] + (target[2] - start[2]) * easeProgress;
 
 		if (progress === 1) {
-			isAnimatingRef.current = false;
-			onSnapComplete?.();
+			animationCompleteTimeRef.current = currentTime;
 		}
 	};
 
