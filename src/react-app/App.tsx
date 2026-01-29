@@ -1,39 +1,49 @@
 import "./App.css";
-import { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, OrbitControls, RoundedBox, Text, MeshTransmissionMaterial, Billboard } from "@react-three/drei";
-import * as THREE from "three";
+import { Environment, OrbitControls, RoundedBox, MeshTransmissionMaterial } from "@react-three/drei";
+import { MenuButtons } from "./MenuButtons";
+import { getScreenConfig } from "./navigationConfig";
+import { useRotationSnap } from "./useRotationSnap";
 
-function Button({ children, color = 'white', ...props }) {
-	const ref = useRef<THREE.Mesh>(null);
-	return (
-		<Text
-			ref={ref}
-			color={color}
-			onPointerOver={() => ref.current?.material.color.set('orange')}
-			onPointerOut={() => ref.current?.material.color.set(color)}
-			font="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYMZs.woff"
-			anchorY="middle"
-			anchorX="center"
-			fontSize={0.09}
-			{...props}>
-			{children}
-		</Text>
-	);
+
+interface BouncingBoxProps {
+	currentScreenId: string;
+	onNavigate: (screenId: string) => void;
 }
 
-function BouncingBox() {
-	const meshRef = useRef<THREE.Mesh>(null);
+function BouncingBox({ currentScreenId, onNavigate }: BouncingBoxProps) {
+	const currentScreen = getScreenConfig(currentScreenId);
+	const { meshRef, snapToFace, updateRotation, isAnimating: isRotationAnimating } = useRotationSnap({
+		targetFaceIndex: currentScreen?.faceIndex || 0,
+		animationDuration: 500,
+	});
 
 	useFrame((state) => {
 		if (meshRef.current) {
-			const time = state.clock.elapsedTime;
-			meshRef.current.position.y = Math.sin(time) * 0.1;
-			meshRef.current.rotation.x = Math.cos(time) * 0.1;
-			meshRef.current.rotation.y = Math.cos(time) * 0.1;
-			meshRef.current.rotation.z = Math.sin(time) * 0.05;
+			// Update rotation animation
+			updateRotation(performance.now());
+
+			// Add subtle animation when not snapping
+			if (!isRotationAnimating()) {
+				const time = state.clock.elapsedTime;
+				meshRef.current.position.y = Math.sin(time) * 0.05;
+			}
 		}
 	});
+
+	// Trigger snap when screen changes
+	const previousScreenRef = useRef(currentScreenId);
+	React.useEffect(() => {
+		if (previousScreenRef.current !== currentScreenId && currentScreen) {
+			snapToFace(currentScreen.faceIndex);
+			previousScreenRef.current = currentScreenId;
+		}
+	}, [currentScreenId, currentScreen, snapToFace]);
+
+	if (!currentScreen) {
+		return null;
+	}
 
 	return (
 		<RoundedBox ref={meshRef} radius={0.075} smoothness={3}>
@@ -45,19 +55,25 @@ function BouncingBox() {
 				iridescenceIOR={1}
 				iridescenceThicknessRange={[0, 1400]}
 			/>
-			<Button position={[0, 0.35, 0.45]}>Game Play</Button>
-			<Button rotation={[0, 0, -Math.PI / 2]} position={[0.35, 0, 0.45]}>
-				Calendar
-			</Button>
-			<Button position={[0, -0.35, 0.45]}>Memory Card</Button>
-			<Button rotation={[0, 0, Math.PI / 2]} position={[-0.35, 0, 0.45]}>
-				Options
-			</Button>
+			<MenuButtons screen={currentScreen} onNavigate={onNavigate} />
 		</RoundedBox>
 	);
 }
 
 function App() {
+	const [currentScreenId, setCurrentScreenId] = useState("home");
+	const [isAnimating, setIsAnimating] = useState(false);
+
+	const handleNavigate = (nextScreenId: string) => {
+		if (isAnimating) return; // Prevent navigation during animation
+
+		setIsAnimating(true);
+		setCurrentScreenId(nextScreenId);
+
+		// Reset animation flag after snap completes
+		setTimeout(() => setIsAnimating(false), 550);
+	};
+
 	return (
 		<div className="App">
 			<Canvas 
@@ -69,7 +85,10 @@ function App() {
 				<ambientLight intensity={0.5} />
 				<spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
 				<pointLight position={[-10, -10, -10]} />
-				<BouncingBox />
+				<BouncingBox 
+					currentScreenId={currentScreenId} 
+					onNavigate={handleNavigate}
+				/>
 				<OrbitControls />
 				<Environment preset="city" />
 			</Canvas>
