@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, OrbitControls, RoundedBox, MeshTransmissionMaterial } from "@react-three/drei";
+import { Environment, RoundedBox, MeshTransmissionMaterial } from "@react-three/drei";
 import { MenuButtons } from "./MenuButtons";
 import { getScreenConfig } from "./navigationConfig";
 import { useRotationSnap } from "./useRotationSnap";
@@ -27,7 +27,10 @@ function BouncingBox({ currentScreenId, onNavigate }: BouncingBoxProps) {
 			// Add subtle animation when not snapping
 			if (!isRotationAnimating()) {
 				const time = state.clock.elapsedTime;
-				meshRef.current.position.y = Math.sin(time) * 0.05;
+				meshRef.current.position.y = Math.sin(time) * 0.1;
+				meshRef.current.rotation.x = Math.cos(time) * 0.1;
+				meshRef.current.rotation.y = Math.cos(time) * 0.1;
+				meshRef.current.rotation.z = Math.sin(time) * 0.05;
 			}
 		}
 	});
@@ -89,7 +92,6 @@ function App() {
 					currentScreenId={currentScreenId} 
 					onNavigate={handleNavigate}
 				/>
-				<OrbitControls />
 				<Environment preset="city" />
 			</Canvas>
 		</div>
