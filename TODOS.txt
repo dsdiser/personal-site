@@ -1,8 +1,12 @@
 To be done:
-- Make cube 3d model
+- Do motion and menu options
+- Do keyboard shortcuts for motion
 - Figure out background texture
+
+To be done later:
 - Figure out reflection texture
 
 
 Done:
 - Install threejs
+- Make cube 3d model

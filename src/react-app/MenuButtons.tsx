@@ -7,11 +7,46 @@ interface MenuButtonsProps {
 	onNavigate: (nextScreenId: string) => void;
 }
 
+const HALF_PI = Math.PI / 2;
+const PI = Math.PI;
+
+const surfaceOffset = 0.45;
+const buttonOffset = 0.35;
+const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
+	[
+		[
+			[0, buttonOffset, surfaceOffset],        // Top
+			[buttonOffset, 0, surfaceOffset],        // Right
+			[0, -buttonOffset, surfaceOffset],       // Bottom
+			[-buttonOffset, 0, surfaceOffset],       // Left
+		],
+		[
+			[0, 0, 0],
+			[0, 0, -HALF_PI],
+			[0, 0, 0],
+			[0, 0, HALF_PI],
+		],
+	],
+	[
+		[
+			[-surfaceOffset, buttonOffset, 0],
+			[-surfaceOffset, 0, buttonOffset],
+			[-surfaceOffset, -buttonOffset, 0],
+			[-surfaceOffset, 0, -buttonOffset],
+		],
+		[
+			[0, -HALF_PI, 0],
+			[0, -HALF_PI, -HALF_PI],
+			[0, -HALF_PI, 0],
+			[0, -HALF_PI, HALF_PI],
+		],
+	]
+];
+
 export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 	// Calculate button positions based on which face is currently active
 	// Positions are in the cube's local coordinate system
-	const surfaceOffset = 0.45;
-	const buttonOffset = 0.35;
+	
 
 	let buttonPositions: Vector3[];
 	let buttonRotations: Vector3[];
@@ -19,59 +54,36 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 	// For each face, define where the 4 buttons should be positioned
 	switch (screen.faceIndex) {
 		case 0: // Front (Z+)
-			buttonPositions = [
-				[0, buttonOffset, surfaceOffset],        // Top
-				[buttonOffset, 0, surfaceOffset],        // Right
-				[0, -buttonOffset, surfaceOffset],       // Bottom
-				[-buttonOffset, 0, surfaceOffset],       // Left
-			];
-			buttonRotations = [
-				[0, 0, 0],
-				[0, 0, -Math.PI / 2],
-				[0, 0, Math.PI],
-				[0, 0, Math.PI / 2],
-			];
 			break;
 		case 1: // Right (X+)
-			buttonPositions = [
-				[surfaceOffset, buttonOffset, 0],        // Top
-				[surfaceOffset, 0, -buttonOffset],       // Right (toward back)
-				[surfaceOffset, -buttonOffset, 0],       // Bottom
-				[surfaceOffset, 0, buttonOffset],        // Left (toward front)
-			];
-			buttonRotations = [
-				[0, 0, 0],
-				[0, 0, -Math.PI / 2],
-				[0, 0, Math.PI],
-				[0, 0, Math.PI / 2],
-			];
+			
 			break;
 		case 2: // Back (Z-)
 			buttonPositions = [
-				[0, buttonOffset, -surfaceOffset],       // Top
-				[-buttonOffset, 0, -surfaceOffset],      // Right
-				[0, -buttonOffset, -surfaceOffset],      // Bottom
-				[buttonOffset, 0, -surfaceOffset],       // Left
+				[0, buttonOffset, -surfaceOffset],
+				[-buttonOffset, 0, -surfaceOffset], 
+				[0, -buttonOffset, -surfaceOffset], 
+				[buttonOffset, 0, -surfaceOffset],  
 			];
 			buttonRotations = [
-				[0, 0, 0],
-				[0, 0, -Math.PI / 2],
-				[0, 0, Math.PI],
-				[0, 0, Math.PI / 2],
+				[0, PI, 0],
+				[0, PI, -HALF_PI],
+				[0, PI, 0],
+				[0, PI, HALF_PI],
 			];
 			break;
 		case 3: // Left (X-)
 			buttonPositions = [
-				[-surfaceOffset, buttonOffset, 0],       // Top
-				[-surfaceOffset, 0, buttonOffset],       // Right (toward front)
-				[-surfaceOffset, -buttonOffset, 0],      // Bottom
-				[-surfaceOffset, 0, -buttonOffset],      // Left (toward back)
+				[surfaceOffset, buttonOffset, 0], 
+				[surfaceOffset, 0, -buttonOffset], 
+				[surfaceOffset, -buttonOffset, 0], 
+				[surfaceOffset, 0, buttonOffset]
 			];
 			buttonRotations = [
-				[0, 0, 0],
-				[0, 0, -Math.PI / 2],
-				[0, 0, Math.PI],
-				[0, 0, Math.PI / 2],
+				[0, HALF_PI, 0],
+				[0, HALF_PI, -HALF_PI],
+				[0, HALF_PI, PI],
+				[0, HALF_PI, HALF_PI],
 			];
 			break;
 		case 4: // Top (Y+)
@@ -82,10 +94,10 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 				[-buttonOffset, surfaceOffset, 0],       // Left
 			];
 			buttonRotations = [
-				[0, 0, 0],
-				[0, 0, -Math.PI / 2],
-				[0, 0, Math.PI],
-				[0, 0, Math.PI / 2],
+				[-HALF_PI, 0, 0],
+				[-HALF_PI, 0, -HALF_PI],
+				[-HALF_PI, 0, 0],
+				[-HALF_PI, 0, HALF_PI],
 			];
 			break;
 		case 5: // Bottom (Y-)
@@ -96,10 +108,10 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 				[-buttonOffset, -surfaceOffset, 0],      // Left
 			];
 			buttonRotations = [
-				[0, 0, 0],
-				[0, 0, -Math.PI / 2],
-				[0, 0, Math.PI],
-				[0, 0, Math.PI / 2],
+				[HALF_PI, 0, 0],
+				[HALF_PI, 0, -HALF_PI],
+				[HALF_PI, 0, PI],
+				[HALF_PI, 0, HALF_PI],
 			];
 			break;
 		default:
@@ -111,45 +123,20 @@ export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
 			];
 			buttonRotations = [
 				[0, 0, 0],
-				[0, 0, -Math.PI / 2],
-				[0, 0, Math.PI],
-				[0, 0, Math.PI / 2],
+				[0, 0, -HALF_PI],
+				[0, 0, PI],
+				[0, 0, HALF_PI],
 			];
 	}
 
 	// For single-button screens, center on the face
-	const numButtons = screen.buttons.length;
-	const isSingleButton = numButtons === 1;
-
-	const centerPositions: Vector3[] = [
-		[0, 0, surfaceOffset],
-		[surfaceOffset, 0, 0],
-		[0, 0, -surfaceOffset],
-		[-surfaceOffset, 0, 0],
-		[0, surfaceOffset, 0],
-		[0, -surfaceOffset, 0],
-	];
-
-	const centerRotations: Vector3[] = [
-		[0, 0, 0],                  // Face 0: Front
-		[0, Math.PI / 2, 0],        // Face 1: Right
-		[0, Math.PI, 0],            // Face 2: Back
-		[0, -Math.PI / 2, 0],       // Face 3: Left
-		[Math.PI / 2, 0, 0],        // Face 4: Top
-		[-Math.PI / 2, 0, 0],       // Face 5: Bottom
-	];
+	console.log(screen.faceIndex)
 
 	return (
 		<>
-			{screen.buttons.map((button, index) => {
-				if (index >= 4) return null;
-
-				const position = isSingleButton 
-					? centerPositions[screen.faceIndex] 
-					: buttonPositions[index];
-				const rotation = isSingleButton 
-					? centerRotations[screen.faceIndex] 
-					: buttonRotations[index];
+			{screen.buttons.map((button) => {
+				const position = buttonPositions[button.position];
+				const rotation = buttonRotations[button.position];
 
 				return (
 					<Button
