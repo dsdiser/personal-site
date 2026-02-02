@@ -13,6 +13,7 @@ const PI = Math.PI;
 const surfaceOffset = 0.45;
 const buttonOffset = 0.35;
 const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
+	// 0: Front (Z+)
 	[
 		[
 			[0, buttonOffset, surfaceOffset],        // Top
@@ -23,10 +24,11 @@ const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
 		[
 			[0, 0, 0],
 			[0, 0, -HALF_PI],
-			[0, 0, 0],
+			[0, 0, PI],
 			[0, 0, HALF_PI],
 		],
 	],
+	// 1: Right (X+)
 	[
 		[
 			[-surfaceOffset, buttonOffset, 0],
@@ -40,97 +42,73 @@ const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
 			[0, -HALF_PI, 0],
 			[0, -HALF_PI, HALF_PI],
 		],
-	]
+	],
+	// 2: Back (Z-)
+	[
+		[
+			[0, buttonOffset, -surfaceOffset],
+			[-buttonOffset, 0, -surfaceOffset],
+			[0, -buttonOffset, -surfaceOffset],
+			[buttonOffset, 0, -surfaceOffset],
+		],
+		[
+			[0, PI, 0],
+			[0, PI, -HALF_PI],
+			[0, PI, 0],
+			[0, PI, HALF_PI],
+		],
+	],
+	// 3: Left (X-)
+	[
+		[
+			[surfaceOffset, buttonOffset, 0],
+			[surfaceOffset, 0, -buttonOffset],
+			[surfaceOffset, -buttonOffset, 0],
+			[surfaceOffset, 0, buttonOffset],
+		],
+		[
+			[0, HALF_PI, 0],
+			[0, HALF_PI, -HALF_PI],
+			[0, HALF_PI, PI],
+			[0, HALF_PI, HALF_PI],
+		],
+	],
+	// 4: Top (Y+)
+	[
+		[
+			[0, surfaceOffset, -buttonOffset],       // Top (back)
+			[buttonOffset, surfaceOffset, 0],        // Right
+			[0, surfaceOffset, buttonOffset],        // Bottom (front)
+			[-buttonOffset, surfaceOffset, 0],       // Left
+		],
+		[
+			[-HALF_PI, 0, 0],
+			[-HALF_PI, 0, -HALF_PI],
+			[-HALF_PI, 0, 0],
+			[-HALF_PI, 0, HALF_PI],
+		],
+	],
+	// 5: Bottom (Y-)
+	[
+		[
+			[0, -surfaceOffset, buttonOffset],       // Top (front)
+			[buttonOffset, -surfaceOffset, 0],       // Right
+			[0, -surfaceOffset, -buttonOffset],      // Bottom (back)
+			[-buttonOffset, -surfaceOffset, 0],      // Left
+		],
+		[
+			[HALF_PI, 0, 0],
+			[HALF_PI, 0, -HALF_PI],
+			[HALF_PI, 0, PI],
+			[HALF_PI, 0, HALF_PI],
+		],
+	],
 ];
 
 export function MenuButtons({ screen, onNavigate }: MenuButtonsProps) {
-	// Calculate button positions based on which face is currently active
-	// Positions are in the cube's local coordinate system
-	
-
-	let buttonPositions: Vector3[];
-	let buttonRotations: Vector3[];
-
-	// For each face, define where the 4 buttons should be positioned
-	switch (screen.faceIndex) {
-		case 0: // Front (Z+)
-			break;
-		case 1: // Right (X+)
-			
-			break;
-		case 2: // Back (Z-)
-			buttonPositions = [
-				[0, buttonOffset, -surfaceOffset],
-				[-buttonOffset, 0, -surfaceOffset], 
-				[0, -buttonOffset, -surfaceOffset], 
-				[buttonOffset, 0, -surfaceOffset],  
-			];
-			buttonRotations = [
-				[0, PI, 0],
-				[0, PI, -HALF_PI],
-				[0, PI, 0],
-				[0, PI, HALF_PI],
-			];
-			break;
-		case 3: // Left (X-)
-			buttonPositions = [
-				[surfaceOffset, buttonOffset, 0], 
-				[surfaceOffset, 0, -buttonOffset], 
-				[surfaceOffset, -buttonOffset, 0], 
-				[surfaceOffset, 0, buttonOffset]
-			];
-			buttonRotations = [
-				[0, HALF_PI, 0],
-				[0, HALF_PI, -HALF_PI],
-				[0, HALF_PI, PI],
-				[0, HALF_PI, HALF_PI],
-			];
-			break;
-		case 4: // Top (Y+)
-			buttonPositions = [
-				[0, surfaceOffset, -buttonOffset],       // Top (back)
-				[buttonOffset, surfaceOffset, 0],        // Right
-				[0, surfaceOffset, buttonOffset],        // Bottom (front)
-				[-buttonOffset, surfaceOffset, 0],       // Left
-			];
-			buttonRotations = [
-				[-HALF_PI, 0, 0],
-				[-HALF_PI, 0, -HALF_PI],
-				[-HALF_PI, 0, 0],
-				[-HALF_PI, 0, HALF_PI],
-			];
-			break;
-		case 5: // Bottom (Y-)
-			buttonPositions = [
-				[0, -surfaceOffset, buttonOffset],       // Top (front)
-				[buttonOffset, -surfaceOffset, 0],       // Right
-				[0, -surfaceOffset, -buttonOffset],      // Bottom (back)
-				[-buttonOffset, -surfaceOffset, 0],      // Left
-			];
-			buttonRotations = [
-				[HALF_PI, 0, 0],
-				[HALF_PI, 0, -HALF_PI],
-				[HALF_PI, 0, PI],
-				[HALF_PI, 0, HALF_PI],
-			];
-			break;
-		default:
-			buttonPositions = [
-				[0, buttonOffset, surfaceOffset],
-				[buttonOffset, 0, surfaceOffset],
-				[0, -buttonOffset, surfaceOffset],
-				[-buttonOffset, 0, surfaceOffset],
-			];
-			buttonRotations = [
-				[0, 0, 0],
-				[0, 0, -HALF_PI],
-				[0, 0, PI],
-				[0, 0, HALF_PI],
-			];
-	}
-
-	// For single-button screens, center on the face
-	console.log(screen.faceIndex)
+	// Use BUTTON_LOCATIONS for all faces, fallback to face 0 if out of range
+	const [buttonPositions, buttonRotations] =
+		BUTTON_LOCATIONS[screen.faceIndex] || BUTTON_LOCATIONS[0];
 
 	return (
 		<>

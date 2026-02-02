@@ -8,6 +8,8 @@ interface UseRotationSnapProps {
 	animationDuration?: number; // in milliseconds
 }
 
+const ANIMATION_STATIC_DELAY = 25; // milliseconds to wait after animation completes before calling onSnapComplete
+
 export function useRotationSnap({
 	targetFaceIndex,
 	onSnapComplete,
@@ -62,7 +64,7 @@ export function useRotationSnap({
 		// Check if animation is complete and delay for a bit before reporting completion
 		if (animationCompleteTimeRef.current > 0) {
 			const delayElapsed = currentTime - animationCompleteTimeRef.current;
-			if (delayElapsed >= 250) {
+			if (delayElapsed >= ANIMATION_STATIC_DELAY) {
 				isAnimatingRef.current = false;
 				onSnapComplete?.();
 			}
@@ -72,10 +74,10 @@ export function useRotationSnap({
 		const elapsed = currentTime - animationStartTimeRef.current;
 		const progress = Math.min(elapsed / animationDuration, 1);
 
-		// Easing function (easeInOutCubic)
+		// Easing function (easeInOutCubic plus a tweak)
 		const easeProgress = progress < 0.5
 			? 4 * progress * progress * progress
-			: 1 - Math.pow(-2 * progress + 2, 3) / 2;
+			: 1 - Math.pow(-2 * progress + 2, 3) / 4;
 
 		// Interpolate rotation
 		const start = startRotationRef.current;

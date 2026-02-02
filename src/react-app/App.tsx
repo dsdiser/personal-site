@@ -31,7 +31,7 @@ function BouncingBox({ currentScreenId, onNavigate }: BouncingBoxProps) {
 	const currentScreen = getScreenConfig(currentScreenId);
 	const { meshRef, snapToFace, updateRotation, isAnimating: isRotationAnimating } = useRotationSnap({
 		targetFaceIndex: currentScreen?.faceIndex || 0,
-		animationDuration: 500,
+		animationDuration: 400,
 	});
 
 	useFrame((state) => {
@@ -99,7 +99,7 @@ function App() {
 		setCurrentScreenId(nextScreenId);
 
 		// Reset animation flag after snap completes
-		setTimeout(() => setIsAnimating(false), 550);
+		setTimeout(() => setIsAnimating(false), 40);
 	};
 
 	return (
