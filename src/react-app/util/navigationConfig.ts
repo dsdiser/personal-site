@@ -5,6 +5,15 @@ export enum MenuButtonSide {
 	Left,
 }
 
+export enum CubeFace {
+	Front,
+	Left,
+	Back,
+	Right,
+	Top,
+	Bottom
+}
+
 export interface MenuButton {
 	label: string;
 	nextScreenId: string;
@@ -14,7 +23,7 @@ export interface MenuButton {
 export interface MenuScreen {
 	id: string;
 	buttons: MenuButton[];
-	faceIndex: number; // 0-5 for cube faces
+	faceIndex: CubeFace;
 }
 
 export const navigationConfig: Record<string, MenuScreen> = {
@@ -25,7 +34,7 @@ export const navigationConfig: Record<string, MenuScreen> = {
 			{ label: "Contact", nextScreenId: "contact", position: MenuButtonSide.Bottom },  
 			{ label: "About", nextScreenId: "about", position: MenuButtonSide.Left },       
 		],
-		faceIndex: 0, // Front
+		faceIndex: CubeFace.Front,
 	},
 	"projects": {
 		id: "projects",
@@ -33,28 +42,28 @@ export const navigationConfig: Record<string, MenuScreen> = {
 			{ label: "Web Apps", nextScreenId: "web-apps", position: MenuButtonSide.Top },     
 			{ label: "Back", nextScreenId: "home", position: MenuButtonSide.Left },          
 		],
-		faceIndex: 3, // Right
+		faceIndex: CubeFace.Right,
 	},
 	"web-apps": {
 		id: "web-apps",
 		buttons: [
 			{ label: "Back", nextScreenId: "projects", position: MenuButtonSide.Bottom },    
 		],
-		faceIndex: 4, // Top
+		faceIndex: CubeFace.Top,
 	},
 	about: {
 		id: "about",
 		buttons: [
 			{ label: "Back", nextScreenId: "home", position: MenuButtonSide.Right },
 		],
-		faceIndex: 1, // Left
+		faceIndex: CubeFace.Left,
 	},
 	contact: {
 		id: "contact",
 		buttons: [
 			{ label: "Back", nextScreenId: "home", position: MenuButtonSide.Top },
 		],
-		faceIndex: 5, // Bottom
+		faceIndex: CubeFace.Bottom,
 	},
 };
 

@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import type { Vector3 } from "../util/types";
+import { CubeFace } from "../util/navigationConfig";
 
 interface UseRotationSnapProps {
 	targetFaceIndex: number;
@@ -24,17 +25,16 @@ export function useRotationSnap({
 	const currentTargetFaceRef = useRef(targetFaceIndex);
 
 	// Calculate target rotation based on face index
-	// Cube faces: 0=front, 1=right, 2=back, 3=left, 4=top, 5=bottom
-	const getFaceRotation = (faceIndex: number): Vector3 => {
-		const rotations: Record<number, Vector3> = {
-			0: [0, 0, 0],                        // Front
-			1: [0, Math.PI / 2, 0],              // Right
-			2: [0, Math.PI, 0],                  // Back
-			3: [0, -Math.PI / 2, 0],             // Left
-			4: [Math.PI / 2, 0, 0],              // Top
-			5: [-Math.PI / 2, 0, 0],             // Bottom
+	const getFaceRotation = (faceIndex: CubeFace): Vector3 => {
+		const rotations: Record<CubeFace, Vector3> = {
+			[CubeFace.Front]: [0, 0, 0],
+			[CubeFace.Right]: [0, Math.PI / 2, 0],
+			[CubeFace.Back]: [0, Math.PI, 0],
+			[CubeFace.Left]: [0, -Math.PI / 2, 0],
+			[CubeFace.Top]: [Math.PI / 2, 0, 0],
+			[CubeFace.Bottom]: [-Math.PI / 2, 0, 0],
 		};
-		return rotations[faceIndex] || [0, 0, 0];
+		return rotations[faceIndex];
 	};
 
 	// Update target face when prop changes
