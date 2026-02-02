@@ -2,10 +2,10 @@ import "./App.css";
 import React, { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, RoundedBox, MeshTransmissionMaterial } from "@react-three/drei";
-import { MenuButtons } from "./MenuButtons";
-import { getScreenConfig } from "./navigationConfig";
-import { useRotationSnap } from "./useRotationSnap";
-import type { Vector3 } from "./types";
+import { MenuButtons } from "./components/MenuButtons";
+import { getScreenConfig } from "./util/navigationConfig";
+import { useRotationSnap } from "./hooks/useRotationSnap";
+import type { Vector3 } from "./util/types";
 
 const bounceAmount = 0.05;
 const wobbleAmount = 0.05;

@@ -1,6 +1,6 @@
-import { MenuScreen } from "./navigationConfig";
+import { MenuScreen } from "../util/navigationConfig";
 import { Button } from "./Button";
-import type { Vector3 } from "./types";
+import type { Vector3 } from "../util/types";
 
 interface MenuButtonsProps {
 	screen: MenuScreen;
@@ -16,10 +16,10 @@ const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
 	// 0: Front (Z+)
 	[
 		[
-			[0, buttonOffset, surfaceOffset],        // Top
-			[buttonOffset, 0, surfaceOffset],        // Right
-			[0, -buttonOffset, surfaceOffset],       // Bottom
-			[-buttonOffset, 0, surfaceOffset],       // Left
+			[0, buttonOffset, surfaceOffset],
+			[buttonOffset, 0, surfaceOffset], 
+			[0, -buttonOffset, surfaceOffset],
+			[-buttonOffset, 0, surfaceOffset],
 		],
 		[
 			[0, 0, 0],
@@ -76,10 +76,10 @@ const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
 	// 4: Top (Y+)
 	[
 		[
-			[0, surfaceOffset, -buttonOffset],       // Top (back)
-			[buttonOffset, surfaceOffset, 0],        // Right
-			[0, surfaceOffset, buttonOffset],        // Bottom (front)
-			[-buttonOffset, surfaceOffset, 0],       // Left
+			[0, surfaceOffset, -buttonOffset],
+			[buttonOffset, surfaceOffset, 0],
+			[0, surfaceOffset, buttonOffset],
+			[-buttonOffset, surfaceOffset, 0],
 		],
 		[
 			[-HALF_PI, 0, 0],
@@ -91,10 +91,10 @@ const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
 	// 5: Bottom (Y-)
 	[
 		[
-			[0, -surfaceOffset, buttonOffset],       // Top (front)
-			[buttonOffset, -surfaceOffset, 0],       // Right
-			[0, -surfaceOffset, -buttonOffset],      // Bottom (back)
-			[-buttonOffset, -surfaceOffset, 0],      // Left
+			[0, -surfaceOffset, buttonOffset],
+			[buttonOffset, -surfaceOffset, 0],
+			[0, -surfaceOffset, -buttonOffset],
+			[-buttonOffset, -surfaceOffset, 0],
 		],
 		[
 			[HALF_PI, 0, 0],

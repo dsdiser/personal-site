@@ -1,12 +1,14 @@
-To be done:
-- Do motion and menu options
+To be done: 
 - Do keyboard shortcuts for motion
 - Figure out background texture
+- Cube texture
+- Update font
 
 To be done later:
 - Figure out reflection texture
 
 
 Done:
+- Menu option buttons
 - Install threejs
 - Make cube 3d model

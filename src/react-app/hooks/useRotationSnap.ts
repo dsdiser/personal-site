@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-import type { Vector3 } from "./types";
+import type { Vector3 } from "../util/types";
 
 interface UseRotationSnapProps {
 	targetFaceIndex: number;
