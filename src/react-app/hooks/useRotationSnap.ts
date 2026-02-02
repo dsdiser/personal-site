@@ -28,9 +28,9 @@ export function useRotationSnap({
 	const getFaceRotation = (faceIndex: CubeFace): Vector3 => {
 		const rotations: Record<CubeFace, Vector3> = {
 			[CubeFace.Front]: [0, 0, 0],
-			[CubeFace.Right]: [0, Math.PI / 2, 0],
+			[CubeFace.Left]: [0, Math.PI / 2, 0],
 			[CubeFace.Back]: [0, Math.PI, 0],
-			[CubeFace.Left]: [0, -Math.PI / 2, 0],
+			[CubeFace.Right]: [0, -Math.PI / 2, 0],
 			[CubeFace.Top]: [Math.PI / 2, 0, 0],
 			[CubeFace.Bottom]: [-Math.PI / 2, 0, 0],
 		};
@@ -77,7 +77,7 @@ export function useRotationSnap({
 		// Easing function (easeInOutCubic plus a tweak)
 		const easeProgress = progress < 0.5
 			? 4 * progress * progress * progress
-			: 1 - Math.pow(-2 * progress + 2, 3) / 4;
+			: 1 - Math.pow(-2 * progress + 2, 3) / 1.1;
 
 		// Interpolate rotation
 		const start = startRotationRef.current;

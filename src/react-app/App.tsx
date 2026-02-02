@@ -105,7 +105,7 @@ function App() {
 	return (
 		<div className="App">
 			<Canvas 
-				camera={{ position: [0, 0.5, 4], fov: 25 }}
+				camera={{ position: [0, 0, 3.2], fov: 25 }}
 				dpr={window.devicePixelRatio}
 				gl={{ antialias: true }}
 			>

@@ -24,7 +24,7 @@ const BUTTON_LOCATIONS: [Vector3[], Vector3[]][] = [
 		[
 			[0, 0, 0],
 			[0, 0, -HALF_PI],
-			[0, 0, PI],
+			[0, 0, 0],
 			[0, 0, HALF_PI],
 		],
 	],
